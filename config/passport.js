@@ -30,8 +30,7 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((id, cb) => {
   User.findByPk(id)
     .then(user => {
-      user = user.toJSON()
-      console.log(user)
+      user = user.toJSON() // findByPk會回傳sequelize model，而不是單純的user object。toJSON()可以移除sequelize的特性。
       return cb(null, user)
     })
 })
