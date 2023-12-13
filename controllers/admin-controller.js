@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -81,6 +81,11 @@ const adminController = {
         req.flash('success_messages', 'restaurant has been deleted successfully')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   }
 }
