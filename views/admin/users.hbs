@@ -20,11 +20,10 @@
       <td>{{this.email}}</td>
       <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
       <td>
-        <button>Role Switch</button>
-        {{!-- <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger"
-            onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
-        </form> --}}
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link"
+            onclick="return confirm(`確定要更新使用者權限嗎？`)">{{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}</button>
+        </form>
       </td>
     </tr>
     {{/each}}
