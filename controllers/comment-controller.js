@@ -3,7 +3,7 @@ const { Comment, Restaurant, User } = require('../models')
 const commentController = {
   postComment: (req, res, next) => {
     const { restaurantId, text } = req.body
-    const { userId } = req.userId
+    const userId = req.user.id
     if (!text) throw new Error('Comment text is required!')
     return Promise.all([
       Restaurant.findByPk(restaurantId),
