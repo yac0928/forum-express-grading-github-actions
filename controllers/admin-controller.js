@@ -109,7 +109,12 @@ const adminController = {
     return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error('User didn\'t exist')
-        if (user.email === 'root@example.com') throw new Error('禁止變更 root 權限')
+        // if (user.email === 'root@example.com') throw new Error('禁止變更 root 權限')
+        // 上面這樣也可以，只是為了符合test寫成下面的樣子，差別是前面有沒有'Error: '
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          res.redirect('back')
+        }
         return user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {

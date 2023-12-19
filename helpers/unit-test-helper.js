@@ -8,14 +8,13 @@ const createModelMock = (name, data, joinedTableName, sourceData) => {
   const defaultValue = data[0]
   const mockModel = dbMock.define(name, defaultValue, {
     instanceMethods: {
-      update: async function (changes) {
+      update: function (changes) {
         const objIndex = data.findIndex(d => d.id === this.get('id'))
         data[objIndex] = {
           ...data[objIndex],
           ...changes
         }
-        const ThisModel = dbMock.model(name)
-        return ThisModel.build(data[objIndex])
+        return Promise.resolve([1, [data[objIndex]]])
       },
       destroy: function () {
         if (joinedTableName) {
