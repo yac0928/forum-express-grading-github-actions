@@ -40,11 +40,48 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id)
-      .then(user => res.render('user/profile', { user: user.toJSON() }))
+      .then(user => {
+        if (!user) throw new Error('User didn\'t exist')
+        res.render('users/profile', { paramUser: user.toJSON() })
+      // 傳入的名稱不能取名為user，否則req.locals.user會被覆蓋，header的部分會出錯
+      })
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
-      .then(user => res.render('user/edit', { user: user.toJSON() }))
+    const paramId = Number(req.params.id)
+    const userId = Number(req.user.id)
+    if (paramId !== userId) {
+      req.flash('error_messages', '只能編輯自己的profile')
+      res.redirect(`/users/${paramId}`)
+    }
+    return User.findByPk(paramId)
+      .then(user => {
+        if (!user) throw new Error('User didn\'t exist')
+        res.render('users/edit', { user: user.toJSON() })
+      })
+  },
+  putUser: (req, res, next) => {
+    const paramId = Number(req.params.id)
+    const userId = Number(req.user.id)
+    if (paramId !== userId) {
+      res.redirect(`/users/${paramId}`)
+    }
+    const { file } = req
+    return Promise.all([
+      User.findByPk(paramId),
+      localFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error('User didn\'t exist')
+        return user.update({
+          name: req.body.name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${paramId}`)
+      })
+      .catch(err => next(err))
   }
 }
 
