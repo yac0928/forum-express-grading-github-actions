@@ -1,7 +1,7 @@
 <div class="row mb-5">
   <div class="col-md-4">
-      {{#if paramUser.image}}
-      <img src="{{paramUser.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
+      {{#if user.image}}
+      <img src="{{user.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
         onload="this.style.opacity=1;" />
       {{else}}
       <img src="https://via.placeholder.com/300" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
@@ -9,12 +9,24 @@
       {{/if}}
   </div>
   <div class="col-md-8">
-    <p>Name: {{paramUser.name}}</p>
-    <p>Email: {{paramUser.email}}</p>
-    {{#ifCond paramUser.id user.id}}
-    <a href="/users/{{paramUser.id}}/edit">
+    <p>Name: {{user.name}}</p>
+    <p>Email: {{user.email}}</p>
+    <p>{{user.commentedRestaurants.length}} 已評論餐廳</p>
+    {{#ifCond user.id passportUser.id}}
+    <a href="/users/{{user.id}}/edit">
       <button class="btn btn-primary">edit</button>
     </a>
     {{/ifCond}}
+  </div>
+
+  <div class="col-md-12 mt-3">
+    <p><b>已評論餐廳列表:</b></p>
+  </div>
+  <div class="col-md-12">
+    {{#each user.commentedRestaurants}}
+      <a href="/restaurants/{{this.id}}">
+        <img src="{{this.image}}" alt="Restaurant Image" style="width: 100px; height: 100px;">
+      </a>
+    {{/each}}
   </div>
 </div>
