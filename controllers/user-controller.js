@@ -51,7 +51,6 @@ const userController = {
           }
           return acc
         }, [])
-        console.log(user)
         res.render('users/profile', { user })
       // 傳入的名稱不能取名為user，否則req.locals.user會被覆蓋，header的部分會出錯。後來我把locals名稱改掉，為了符合test。
       })
