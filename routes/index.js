@@ -18,6 +18,7 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout) // get?應該是post?
 
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
@@ -40,7 +41,7 @@ router.put('/users/:id', authenticated, upload.single('image'), userController.p
 router.post('/following/:userId', authenticated, userController.addFollowing)
 router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
-router.get('/', (req, res) => res.redirect('/restaurants'))
+router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
 module.exports = router
