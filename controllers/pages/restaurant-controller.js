@@ -61,7 +61,8 @@ const restaurantController = {
       .then(([restaurants, comments]) => {
         const data = restaurants.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description ? r.description.substring(0, 50) : null
+          // 因為description非必填欄位，null.substring()會出錯，故先確認是否有description
         }))
         res.render('feeds', {
           restaurants: data,
@@ -79,7 +80,7 @@ const restaurantController = {
         const result = restaurants
           .map(r => ({
             ...r.toJSON(),
-            description: r.toJSON().description.substring(0, 50),
+            description: r.toJSON().description ? r.toJSON().description.substring(0, 50) : null,
             favoritedCount: r.FavoritedUsers.length,
             isFavorited: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(r.id)
           }))
