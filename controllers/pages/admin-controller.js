@@ -7,9 +7,7 @@ const adminController = {
     adminServices.getRestaurants(req, (err, data) => err ? next(err) : res.render('admin/restaurants', data))
   },
   createRestaurant: (req, res, next) => {
-    return Category.findAll({ raw: true })
-      .then(categories => res.render('admin/create-restaurant', { categories }))
-      .catch(err => next(err))
+    adminServices.createRestaurant(req, (err, data) => err ? next(err) : res.render('admin/create-restaurant', data))
   },
   postRestaurant: (req, res, next) => {
     adminServices.postRestaurant(req, (err, data) => {
@@ -21,83 +19,37 @@ const adminController = {
   },
 
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      raw: true,
-      nest: true,
-      include: [Category]
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error('Restaurant didn\'t exist')
-        res.render('admin/restaurant', { restaurant })
-      })
-      .catch(err => next(err))
+    adminServices.getRestaurant(req, (err, data) => err ? next(err) : res.render('admin/restaurant', data))
   },
   editRestaurant: (req, res, next) => {
-    return Promise.all([
-      Restaurant.findByPk(req.params.id, { raw: true }),
-      Category.findAll({ raw: true })
-    ])
-      .then(([restaurant, categories]) => {
-        if (!restaurant) throw new Error('Restaurant didn\'t exist')
-        res.render('admin/edit-restaurant', { restaurant, categories })
-      })
-      .catch(err => next(err))
+    adminServices.editRestaurant(req, (err, data) => err ? next(err) : res.render('admin/edit-restaurant', data))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
-    if (!name) throw new Error('Restaurant name is required')
-    const { file } = req
-    return Promise.all([
-      Restaurant.findByPk(req.params.id),
-      localFileHandler(file)
-    ])
-      .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error('Restaurant didn\'t exist')
-        return restaurant.update({
-          name,
-          tel,
-          address,
-          openingHours,
-          description,
-          image: filePath || restaurant.image,
-          categoryId
-        })
-      })
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully to update')
-        res.redirect('/admin/restaurants')
-      })
-      .catch(err => next(err))
+    adminServices.putRestaurant(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', 'restaurant was successfully to update')
+      req.session.putData = data
+      return res.redirect('/admin/restaurants')
+    })
   },
   deleteRestaurant: (req, res, next) => {
     adminServices.deleteRestaurant(req, (err, data) => {
       if (err) return next(err)
+      req.flash('success_messages', 'restaurant was successfully deleted')
       req.session.deletedData = data
       return res.redirect('/admin/restaurants')
     })
   },
   getUsers: (req, res, next) => {
-    return User.findAll({ raw: true })
-      .then(users => res.render('admin/users', { users }))
-      .catch(err => next(err))
+    adminServices.getUsers(req, (err, data) => err ? next(err) : res.render('admin/users', data))
   },
   patchUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
-      .then(user => {
-        if (!user) throw new Error('User didn\'t exist')
-        // if (user.email === 'root@example.com') throw new Error('禁止變更 root 權限')
-        // 上面這樣也可以，只是為了符合test寫成下面的樣子，差別是前面有沒有'Error: '
-        if (user.email === 'root@example.com') {
-          req.flash('error_messages', '禁止變更 root 權限')
-          res.redirect('back')
-        }
-        return user.update({ isAdmin: !user.isAdmin })
-      })
-      .then(() => {
-        req.flash('success_messages', '使用者權限變更成功')
-        res.redirect('/admin/users')
-      })
-      .catch(err => next(err))
+    adminServices.putRestaurant(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', '使用者權限變更成功')
+      req.session.patchedData = data
+      return res.redirect('/admin/users')
+    })
   }
 }
 module.exports = adminController
