@@ -6,7 +6,10 @@ const userServices = {
   signUp: (req, cb) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
 
-    return User.findOne({ where: { email: req.body.email } })
+    return User.findOne({
+      where: { email: req.body.email },
+      attributes: { exclude: ['password'] }
+    })
       .then(user => {
         if (user) throw new Error('Email already exists!')
         return bcrypt.hash(req.body.password, 10)
@@ -21,19 +24,19 @@ const userServices = {
   },
   getUser: (req, cb) => {
     return User.findByPk(req.params.id, {
-      include: { model: Comment, include: Restaurant }
+      include: { model: Comment, include: Restaurant },
+      attributes: { exclude: ['password'] }
     })
       .then(user => {
         if (!user) throw new Error('User didn\'t exist')
         user = user.toJSON()
-        console.log(user.Comments[0].Restaurant)
         user.commentedRestaurants = user.Comments && user.Comments.reduce((acc, c) => {
           if (!acc.some(r => r.id === c.restaurantId)) {
             acc.push(c.Restaurant)
           }
           return acc
         }, [])
-        cb(null, user)
+        cb(null, { user })
       // 傳入的名稱不能取名為user，否則req.locals.user會被覆蓋，header的部分會出錯。後來我把locals名稱改掉，為了符合test。
       })
       .catch(err => cb(err))
@@ -44,7 +47,9 @@ const userServices = {
     if (paramId !== userId) throw new Error('Permission denied!')
     const { file } = req
     return Promise.all([
-      User.findByPk(paramId),
+      User.findByPk(paramId, {
+        attributes: { exclude: ['password'] }
+      }),
       localFileHandler(file)
     ])
       .then(([user, filePath]) => {
@@ -131,7 +136,8 @@ const userServices = {
   },
   getTopUsers: (req, cb) => {
     return User.findAll({
-      include: [{ model: User, as: 'Followers' }]
+      include: [{ model: User, as: 'Followers' }],
+      attributes: { exclude: ['password'] }
     })
       .then(users => {
         const result = users
