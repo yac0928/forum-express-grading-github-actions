@@ -26,7 +26,7 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    userServices.createRestaurant(req, (err, data) => err ? next(err) : res.render('users/profile', data))
+    userServices.getUser(req, (err, data) => err ? next(err) : res.render('users/profile', data))
   },
   editUser: (req, res, next) => {
     // if (Number(req.params.id) !== Number(req.user.id)) {

@@ -42,7 +42,7 @@ const adminController = {
     adminServices.getUsers(req, (err, data) => err ? next(err) : res.render('admin/users', data))
   },
   patchUser: (req, res, next) => {
-    adminServices.putRestaurant(req, (err, data) => {
+    adminServices.patchUser(req, (err, data) => {
       if (err) return next(err)
       req.flash('success_messages', '使用者權限變更成功')
       req.session.patchedData = data

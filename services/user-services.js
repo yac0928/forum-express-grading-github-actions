@@ -26,6 +26,7 @@ const userServices = {
       .then(user => {
         if (!user) throw new Error('User didn\'t exist')
         user = user.toJSON()
+        console.log(user.Comments[0].Restaurant)
         user.commentedRestaurants = user.Comments && user.Comments.reduce((acc, c) => {
           if (!acc.some(r => r.id === c.restaurantId)) {
             acc.push(c.Restaurant)
