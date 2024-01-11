@@ -63,6 +63,7 @@ const adminServices = {
   putRestaurant: (req, cb) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required')
+    if (!categoryId) throw new Error('CategoryId is required')
     const { file } = req
     return Promise.all([
       Restaurant.findByPk(req.params.id),

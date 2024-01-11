@@ -100,7 +100,7 @@ npm run start
 - 帳號 2（一般用戶）：user1@example.com / 密碼：12345678
 
 7. API 操作相關說明  
-本專案提供 API 版本，路由說明請見 [餐廳論壇API文件](https://reurl.cc/dLV4pz)   
+本專案提供 API 版本，路由說明請見 [餐廳論壇API文件](https://tricolor-drink-8e5.notion.site/API-55017a992a4f40bc9d42937c68041220#7577e7112744486e904c471e74d3975c)   
 進行各項 API 功能操作前，需先透過 `POST /api/signin` 進行登入。  
 Request body：  
 ```

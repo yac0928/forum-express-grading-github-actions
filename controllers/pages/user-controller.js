@@ -69,7 +69,7 @@ const userController = {
       if (err) return next(err)
       req.flash('success_messages', '成功加入喜歡!')
       req.session.createdData = data
-      res.redirect('/signin')
+      res.redirect('back')
     })
   },
   removeLike: (req, res, next) => {
