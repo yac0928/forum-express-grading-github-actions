@@ -46,13 +46,8 @@ npm install
 ```
 
 4. 資料庫設定  
+請自行建立資料庫
 
-執行以下指令以快速建立資料庫、資料表，以及匯入種子資料：
-
-```
-npm run setup-db
-```
-⚠️ **執行上述指令前，請先確認是否需更改預設設定**  
 --- MySQL server 連線之預設設定如下：
 ```
 host: '127.0.0.1'  // localhost
@@ -60,17 +55,12 @@ username: 'root'
 password: 'password'
 database: 'forum'
 ```
-若欲更改設定，請編輯專案資料夾中 `/config/config.json` 中的 "development"  
-  
-您也可以透過以下指令分別執行資料庫建立、資料表建立、匯入種子資料：
+接著進行資料表建立、種子資料匯入
 ```
-npm run db:create
+npx sequelize db:migrate
 ```
 ```
-npm run db:migrate
-```
-```
-npm run db:seed
+npm sequelize db:seed:all
 ```
 
 5. 環境變數設定
